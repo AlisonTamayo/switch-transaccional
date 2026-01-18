@@ -227,10 +227,6 @@ services:
     networks:
       - default
 
-volumes:
-  caddy_data:
-  caddy_config:
-
   # ==========================================
   # 9. FRONTEND (React + Vite)
   # ==========================================
@@ -247,3 +243,7 @@ volumes:
       - ms-compensacion
     networks:
       - default
+
+volumes:
+  caddy_data:
+  caddy_config:
