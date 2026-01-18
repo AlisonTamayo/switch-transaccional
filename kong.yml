@@ -11,7 +11,7 @@ services:
       - name: ruta-transacciones-legacy
         paths:
           - /transacciones
-        strip_path: true
+        strip_path: false
     plugins:
       - name: cors
         config:
