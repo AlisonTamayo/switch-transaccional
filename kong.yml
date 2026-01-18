@@ -2,16 +2,16 @@ _format_version: "3.0"
 
 services:
   # ==========================================
-  # SERVICIOS LEGACY (Para Frontend actual)
-  # Base URL incluye /api/v1 y strip_path: true
+  # 1. SERVICIOS LEGACY (Frontend)
+  # Corrección: URLs base apuntan al PATH del controlador
   # ==========================================
   - name: switch-nucleo-service-legacy
-    url: http://ms-nucleo:8082/api/v1
+    url: http://ms-nucleo:8082/api/v1/transacciones
     routes:
       - name: ruta-transacciones-legacy
         paths:
           - /transacciones
-        strip_path: false
+        strip_path: true
     plugins:
       - name: cors
         config:
@@ -32,7 +32,7 @@ services:
           methods: ["GET", "POST", "PATCH", "OPTIONS"]
 
   - name: switch-contabilidad-service-legacy
-    url: http://ms-contabilidad:8083/api/v1
+    url: http://ms-contabilidad:8083/api/v1/ledger
     routes:
       - name: ruta-contabilidad-legacy
         paths:
@@ -45,7 +45,7 @@ services:
           methods: ["GET", "POST", "OPTIONS"]
 
   - name: switch-compensacion-service-legacy
-    url: http://ms-compensacion:8084/api/v1
+    url: http://ms-compensacion:8084/api/v1/compensacion
     routes:
       - name: ruta-compensacion-legacy
         paths:
@@ -58,8 +58,7 @@ services:
           methods: ["GET", "POST", "OPTIONS"]
 
   # ==========================================
-  # SERVICIOS V1 (Para ArcBank e ISO 20022)
-  # Base URL raíz y strip_path: false
+  # 2. SERVICIOS V1 (Bancos Actuales - ArcBank)
   # ==========================================
   - name: switch-nucleo-service-v1
     url: http://ms-nucleo:8082
@@ -93,14 +92,26 @@ services:
         config:
           origins: ["*"]
           methods: ["GET", "POST", "PATCH", "OPTIONS"]
-
-  - name: switch-contabilidad-service-v1
-    url: http://ms-contabilidad:8083
+  
+  # ==========================================
+  # 3. CONTRATO V2 (Compliance)
+  # Mapeos especiales
+  # ==========================================
+  
+  # RF-01 y RF-04: Transacciones
+  - name: switch-contract-v2-transfers
+    url: http://ms-nucleo:8082/api/v1/transacciones
     routes:
-      - name: ruta-contabilidad-v1
+      - name: v2-transfers-start
         paths:
-          - /api/v1/contabilidad
-        strip_path: false
+          - /api/v2/switch/transfers$
+        strip_path: true
+        methods: ["POST"]
+      - name: v2-transfers-status
+        paths:
+          - /api/v2/switch/transfers/
+        strip_path: true
+        methods: ["GET"]
     plugins:
       - name: key-auth
         config:
@@ -110,13 +121,15 @@ services:
           origins: ["*"]
           methods: ["GET", "POST", "OPTIONS"]
 
-  - name: switch-compensacion-service-v1
-    url: http://ms-compensacion:8084
+  # RF-07: Devoluciones
+  - name: switch-contract-v2-returns
+    url: http://ms-contabilidad:8083/api/v1/ledger/v2/switch/transfers/return
     routes:
-      - name: ruta-compensacion-v1
+      - name: v2-transfers-return
         paths:
-          - /api/v1/compensacion
-        strip_path: false
+          - /api/v2/switch/transfers/return
+        strip_path: true
+        methods: ["POST"]
     plugins:
       - name: key-auth
         config:
@@ -124,7 +137,25 @@ services:
       - name: cors
         config:
           origins: ["*"]
-          methods: ["GET", "POST", "OPTIONS"]
+          methods: ["POST", "OPTIONS"]
+
+  # RF-01.1: Funding
+  - name: switch-contract-v2-funding
+    url: http://ms-contabilidad:8083/api/v1/ledger/cuentas
+    routes:
+      - name: v2-funding
+        paths:
+          - /funding
+        strip_path: true
+        methods: ["GET"]
+    plugins:
+      - name: key-auth
+        config:
+          key_names: ["apikey"]
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "OPTIONS"]
 
 consumers:
   - username: NEXUS_BANK
