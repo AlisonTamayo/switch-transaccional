@@ -2,11 +2,11 @@ _format_version: "3.0"
 
 services:
   - name: switch-nucleo-service
-    url: http://ms-nucleo:8082/api/v1
+    url: http://ms-nucleo:8082
     routes:
       - name: ruta-transacciones
         paths:
-          - /transacciones
+          - /api/v1/transacciones
         strip_path: false
         methods:
           - POST
@@ -26,12 +26,13 @@ services:
             - OPTIONS
 
   - name: switch-directorio-service
-    url: http://ms-directorio:8081/api/v1
+    url: http://ms-directorio:8081
     routes:
       - name: ruta-directorio
         paths:
-          - /directorio
-        strip_path: true
+          - /api/v1/directorio
+          - /api/v1/instituciones
+        strip_path: false
     plugins:
       - name: key-auth
         config:
@@ -48,12 +49,12 @@ services:
             - OPTIONS
 
   - name: switch-contabilidad-service
-    url: http://ms-contabilidad:8083/api/v1
+    url: http://ms-contabilidad:8083
     routes:
       - name: ruta-contabilidad
         paths:
-          - /contabilidad
-        strip_path: true
+          - /api/v1/contabilidad
+        strip_path: false
     plugins:
       - name: key-auth
         config:
@@ -69,12 +70,12 @@ services:
             - OPTIONS
 
   - name: switch-compensacion-service
-    url: http://ms-compensacion:8084/api/v1
+    url: http://ms-compensacion:8084
     routes:
       - name: ruta-compensacion
         paths:
-          - /compensacion
-        strip_path: true
+          - /api/v1/compensacion
+        strip_path: false
     plugins:
       - name: key-auth
         config:
