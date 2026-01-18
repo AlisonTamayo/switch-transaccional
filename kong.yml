@@ -96,9 +96,7 @@ services:
     url: http://ms-nucleo:8082/api/v1/transacciones
     routes:
       - name: v2-transfers
-        paths: 
-          - /api/v2/switch/transfers$
-          - /api/v2/switch/transfers/
+        paths: ["/api/v2/switch/transfers"]
         strip_path: true
         methods: ["GET", "POST"]
     plugins:
