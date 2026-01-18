@@ -9,7 +9,8 @@ switch-digiconecu.duckdns.org {
         reverse_proxy kong-gateway:8000
     }
     
-    handle /api* {
+    # Para el Frontend que añade /api, DEBEMOS quitarlo con handle_path
+    handle_path /api* {
         reverse_proxy kong-gateway:8000
     }
 
