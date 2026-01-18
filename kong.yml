@@ -1,34 +1,86 @@
 _format_version: "3.0"
 
 services:
-  - name: switch-nucleo-service
+  # ==========================================
+  # SERVICIOS LEGACY (Para Frontend actual)
+  # Base URL incluye /api/v1 y strip_path: true
+  # ==========================================
+  - name: switch-nucleo-service-legacy
+    url: http://ms-nucleo:8082/api/v1
+    routes:
+      - name: ruta-transacciones-legacy
+        paths:
+          - /transacciones
+        strip_path: true
+    plugins:
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "OPTIONS"]
+
+  - name: switch-directorio-service-legacy
+    url: http://ms-directorio:8081/api/v1
+    routes:
+      - name: ruta-directorio-legacy
+        paths:
+          - /directorio
+        strip_path: true
+    plugins:
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "PATCH", "OPTIONS"]
+
+  - name: switch-contabilidad-service-legacy
+    url: http://ms-contabilidad:8083/api/v1
+    routes:
+      - name: ruta-contabilidad-legacy
+        paths:
+          - /contabilidad
+        strip_path: true
+    plugins:
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "OPTIONS"]
+
+  - name: switch-compensacion-service-legacy
+    url: http://ms-compensacion:8084/api/v1
+    routes:
+      - name: ruta-compensacion-legacy
+        paths:
+          - /compensacion
+        strip_path: true
+    plugins:
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "OPTIONS"]
+
+  # ==========================================
+  # SERVICIOS V1 (Para ArcBank e ISO 20022)
+  # Base URL raíz y strip_path: false
+  # ==========================================
+  - name: switch-nucleo-service-v1
     url: http://ms-nucleo:8082
     routes:
-      - name: ruta-transacciones
+      - name: ruta-transacciones-v1
         paths:
           - /api/v1/transacciones
         strip_path: false
-        methods:
-          - POST
-          - GET
     plugins:
       - name: key-auth
         config:
-          key_names:
-            - apikey
+          key_names: ["apikey"]
       - name: cors
         config:
-          origins:
-            - "*"
-          methods:
-            - GET
-            - POST
-            - OPTIONS
+          origins: ["*"]
+          methods: ["GET", "POST", "OPTIONS"]
 
-  - name: switch-directorio-service
+  - name: switch-directorio-service-v1
     url: http://ms-directorio:8081
     routes:
-      - name: ruta-directorio
+      - name: ruta-directorio-v1
         paths:
           - /api/v1/directorio
           - /api/v1/instituciones
@@ -36,77 +88,57 @@ services:
     plugins:
       - name: key-auth
         config:
-          key_names:
-            - apikey
+          key_names: ["apikey"]
       - name: cors
         config:
-          origins:
-            - "*"
-          methods:
-            - GET
-            - POST
-            - PATCH
-            - OPTIONS
+          origins: ["*"]
+          methods: ["GET", "POST", "PATCH", "OPTIONS"]
 
-  - name: switch-contabilidad-service
+  - name: switch-contabilidad-service-v1
     url: http://ms-contabilidad:8083
     routes:
-      - name: ruta-contabilidad
+      - name: ruta-contabilidad-v1
         paths:
           - /api/v1/contabilidad
         strip_path: false
     plugins:
       - name: key-auth
         config:
-          key_names:
-            - apikey
+          key_names: ["apikey"]
       - name: cors
         config:
-          origins:
-            - "*"
-          methods:
-            - GET
-            - POST
-            - OPTIONS
+          origins: ["*"]
+          methods: ["GET", "POST", "OPTIONS"]
 
-  - name: switch-compensacion-service
+  - name: switch-compensacion-service-v1
     url: http://ms-compensacion:8084
     routes:
-      - name: ruta-compensacion
+      - name: ruta-compensacion-v1
         paths:
           - /api/v1/compensacion
         strip_path: false
     plugins:
       - name: key-auth
         config:
-          key_names:
-            - apikey
+          key_names: ["apikey"]
       - name: cors
         config:
-          origins:
-            - "*"
-          methods:
-            - GET
-            - POST
-            - OPTIONS
+          origins: ["*"]
+          methods: ["GET", "POST", "OPTIONS"]
 
 consumers:
   - username: NEXUS_BANK
     keyauth_credentials:
       - key: NEXUS_SECRET_KEY_123
-
   - username: ECUSOL_BK
     keyauth_credentials:
       - key: PUBLIC_KEY_ECUSOL_67890
-
   - username: ARCBANK
     keyauth_credentials:
       - key: ARCBANK_SECRET_KEY_2025_XYZ
-
   - username: BANTEC
     keyauth_credentials:
       - key: BANTEC_SECRET_KEY_2025
-
   - username: SWITCH_ADMIN
     keyauth_credentials:
       - key: SWITCH_ADMIN_SUPER_SECRET_KEY
