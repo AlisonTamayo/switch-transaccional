@@ -1,4 +1,4 @@
-switch-digiconecu.duckdns.org {
+:80 {
     # 1. Frontend (Root)
     # Redirige todo el tráfico raíz al contenedor del Frontend
     reverse_proxy switch-frontend:80
