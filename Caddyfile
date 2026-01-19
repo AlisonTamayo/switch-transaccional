@@ -1,18 +1,22 @@
 switch-digiconecu.duckdns.org {
-    # 1. Frontend (Root)
     reverse_proxy switch-frontend:80
-
-    # 2. Ruteo para BANCOS (ISO V2) - IMPORTANTE: NO QUITAR PREFIJO
-    # Kong espera la ruta completa: /api/v2/switch/transfers
     handle /api/v2* {
         reverse_proxy kong-gateway:8000
     }
-
-    # 3. Ruteo para FRONTEND (Dashboard)
-    # Kong espera rutas cortas: /transacciones, /directorio
     handle_path /api* {
         reverse_proxy kong-gateway:8000
     }
+}
+
+:80 {
+    reverse_proxy switch-frontend:80
+    handle /api/v2* {
+        reverse_proxy kong-gateway:8000
+    }
+    handle_path /api* {
+        reverse_proxy kong-gateway:8000
+    }
+}
 
     log {
         output stdout
