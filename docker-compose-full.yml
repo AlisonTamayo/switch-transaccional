@@ -194,6 +194,9 @@ services:
       KONG_STATUS_LISTEN: 0.0.0.0:8100
       KONG_ADMIN_GUI_LISTEN: 0.0.0.0:8002
       KONG_ADMIN_GUI_API_URL: http://34.16.106.7:8001
+      # FIX DNS: Usar DNS de Docker interno para encontrar microservicios
+      KONG_DNS_RESOLVER: 127.0.0.11
+      KONG_DNS_ORDER: LAST,A,CNAME
       KONG_PLUGINS: bundled,prometheus,cors,key-auth
     ports:
       - "8000:8000"
