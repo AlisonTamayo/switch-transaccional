@@ -68,7 +68,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_REDIS_HOST=redis-switch
-      - SPRING_REDIS_PORT=6379 OR 6379
+      - SPRING_REDIS_PORT=6379
       - URL_DIRECTORIO=http://ms-directorio:8081
       - URL_CONTABILIDAD=http://ms-contabilidad:8083
     depends_on:
