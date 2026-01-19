@@ -1,22 +1,21 @@
 switch-digiconecu.duckdns.org {
-    reverse_proxy switch-frontend:80
-    handle /api/v2* {
+    # 1. RUTAS DE BANCOS (RFC V2)
+    # Conservan el prefijo /api porque Kong lo necesita para el match
+    handle /api/v2/* {
         reverse_proxy kong-gateway:8000
     }
-    handle_path /api* {
-        reverse_proxy kong-gateway:8000
-    }
-}
 
-:80 {
-    reverse_proxy switch-frontend:80
-    handle /api/v2* {
+    # 2. RUTAS DE FRONTEND (Internas)
+    # Quitan el prefijo /api para que coincidan con las rutas cortas de Kong (/transacciones)
+    handle_path /api/* {
         reverse_proxy kong-gateway:8000
     }
-    handle_path /api* {
-        reverse_proxy kong-gateway:8000
+
+    # 3. FRONTEND (Catch-all)
+    # Todo lo demas va al React App
+    handle {
+        reverse_proxy switch-frontend:80
     }
-}
 
     log {
         output stdout
@@ -24,14 +23,20 @@ switch-digiconecu.duckdns.org {
 }
 
 :80 {
-    reverse_proxy switch-frontend:80
-    
-    # Misma lógica para IP directa
-    handle /api/v2* {
+    # (Misma logica para acceso por IP)
+    handle /api/v2/* {
         reverse_proxy kong-gateway:8000
     }
-    
-    handle_path /api* {
+
+    handle_path /api/* {
         reverse_proxy kong-gateway:8000
+    }
+
+    handle {
+        reverse_proxy switch-frontend:80
+    }
+
+    log {
+        output stdout
     }
 }
