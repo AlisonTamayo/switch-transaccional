@@ -63,6 +63,12 @@ services:
         paths: ["/api/v2/switch/transfers"]
         strip_path: true
         methods: ["GET", "POST", "OPTIONS"]
+      
+      # RF-04: Consulta de Estado (Ruta Explícita)
+      - name: v2-status-query-route
+        paths: ["~/api/v2/switch/transfers/(?<id>\\S+)$"]
+        strip_path: true
+        methods: ["GET", "OPTIONS"]
     plugins:
       - name: key-auth
         config: { key_names: ["apikey"] }
